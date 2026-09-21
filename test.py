@@ -6,37 +6,38 @@ import json
 
 TASK_FILE = "task.json"
 
-def load_tasks():
-    if not os.path.exist(TASK_FILE):
-        with open(TASK_FILE, "w") as f:
-            json.dump([], f)
-        print("File doesn't exist, so created one instead.")
+# create file if it does not exist
+if not os.path.exists(TASK_FILE):
+    with open(TASK_FILE, "w") as f:
+        json.dump([], f)
 
-    with open(TASK_FILE, "r") as f:
-        try:
-            tasks = json.load(f)
-            print(tasks)
-        except json.JSONDecodeError as e:
-            print(f"error loading {file}: {e}")
-
-
-def add_task(description):
-    if not os.path.exist(TASK_FILE):
-        print("Please run load tasks first!")
-    
-    tasks = load_tasks()
-
-    new_id = 1 if not tasks else tasks[-1]["id"] + 1
-
-    new_task = {
-        "id": new_id,
-        "description" : description,
-        
-    }
+with open(TASK_FILE, "r") as f:
+    try:
+        tasks = json.load(f)
+    except json.JSONDecodeError as e:
+        print(f"error loading {TASK_FILE}: {e}")
+        tasks = []
 
 
+def add_task(title=None, description=None):
+    if any(task["title"] == title for task in tasks):
+        print(f"Task with title '{title}' already exists.")
+        return
+        task_id = 1 if not tasks else tasks[-1]["id"] + 1
 
-# def update_task():
+        new_task = {
+            "id": task_id,
+            "title": title,
+            "description" : description,
+            "done": False
+        }
+
+
+    tasks.append(new_task)
+    with open(TASK_FILE, "w") as f:
+        json.dump(tasks, f)
+
+# def update_task(description, ):
 
 # def delete_task():
 
