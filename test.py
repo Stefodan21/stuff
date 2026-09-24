@@ -6,7 +6,7 @@ import json
 
 TASK_FILE = "task.json"
 
-allowedstatus= {"Ongoing","Done","Todo"}
+allowedstatus= {"pending","Done","Todo"}
 
 # create file if it does not exist
 if not os.path.exists(TASK_FILE):
@@ -44,7 +44,7 @@ def add_task(title=None, description=None):
     with open(TASK_FILE, "w") as f:
         json.dump(tasks, f)
 
-def update_task(task_id, status):
+def update_task(task_id, description):
     try:
         if not isinstance(task_id, int):
             raise ValueError("Task_id must be an integer")
@@ -54,13 +54,13 @@ def update_task(task_id, status):
             raise ValueError("Task ID is required.If you dont know, run the list task command.")
 
 
-        if status not in allowedstatus:
-            raise ValueError('Please enter if it is "Ongoing", "Done", or "Todo"')
+        if not isinstance(description, str):
+            raise ValueError("Description must be a string")
 
         for task in tasks:
             if task["id"] == task_id:
-                task["status"] = status
-                print(f"the task:{task["id"]}, description{task["description"]} task has been updated to {task["status"]}!")
+                task["description"] = description
+                print(f"the task:{task['id']}, description{task['description']} task has been updated!")
 
             with open(TASK_FILE,"w") as f:
                 json.dump(tasks, f)
@@ -77,7 +77,7 @@ def list_tasks():
             return
 
         for task in tasks:
-            print(f"{task["id"]}: {task["Title"]}-{task["description"]} status: {task["status"]}")
+            print(f"{task["id"]}: {task["title"]}-{task["description"]} status: {task["status"]}")
         
         return
 
@@ -101,6 +101,9 @@ def delete_task(task_id):
             json.dump(tasks, f)
 
         print(f"Task {task_id} has been deleted!")
+    except ValueError as e:
+        print("Error:", e)
+        return
 
         
 
@@ -117,6 +120,7 @@ def delete_task(task_id):
 
 command = sys.argv[1]
 description = sys.argv[2]
+status = sys.argv[3]
 
 if command == "add":
 
