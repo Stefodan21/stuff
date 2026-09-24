@@ -59,7 +59,7 @@ def update_task(task_id, status):
 
         for task in tasks:
             if task["id"] == task_id:
-                task["id"] = status
+                task["status"] = status
                 print(f"the task:{task["id"]}, description{task["description"]} task has been updated to {task["status"]}!")
 
             with open(TASK_FILE,"w") as f:
@@ -70,12 +70,41 @@ def update_task(task_id, status):
         return
 
 
- def list_tasks():
+def list_tasks():
     try:
-        print(tasks)
-    except:
+        if tasks == []:
+            print("No tasks found.")
+            return
 
-# def delete_task():
+        for task in tasks:
+            print(f"{task["id"]}: {task["Title"]}-{task["description"]} status: {task["status"]}")
+        
+        return
+
+    except Exception as e:
+        print("Error:", e)
+
+def delete_task(task_id):
+    try:
+        if not isinstance(task_id, int):
+            raise ValueError("Please enter a value task id number")
+
+        if not any(task["id"] == task_id for task in tasks):
+            raise ValueError("That task id does not exist, Please enter a valid task id if you want to delete it!")
+
+        for task in tasks:
+            if task_id == task["id"]:
+                tasks.remove(task)
+                break
+        
+        with open(TASK_FILE, "w") as f:
+            json.dump(tasks, f)
+
+        print(f"Task {task_id} has been deleted!")
+
+        
+
+
 
 # def markasdone():
 
