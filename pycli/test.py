@@ -1,4 +1,4 @@
-#!usr/bin/env python3
+#!/usr/bin/env python3
 
 import os
 import sys
@@ -11,14 +11,14 @@ allowedstatus= {"pending","Done","Todo"}
 # create file if it does not exist
 if not os.path.exists(TASK_FILE):
     with open(TASK_FILE, "w") as f:
-        json.dump([], f)
+        json.dump({}, f)
 
 with open(TASK_FILE, "r") as f:
     try:
         tasks = json.load(f)
     except json.JSONDecodeError as e:
         print(f"error loading {TASK_FILE}: {e}")
-        tasks = []
+        tasks = {}
 
 
 def add_task(title=None, description=None):
@@ -72,7 +72,7 @@ def update_task(task_id, description):
 
 def list_tasks():
     try:
-        if tasks == []:
+        if tasks == {}:
             print("No tasks found.")
             return
 
